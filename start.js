@@ -1,26 +1,40 @@
 "use strict";
 //DOM取得
-const startDisp = document.getElementById('start_display');
-const startBtn = document.getElementById('start_btn');
-const startH1 = document.getElementById('start_h1');
-const startDiv = document.getElementById('start_div');
-const quizDisp = document.getElementById('quiz_display');
+const startDisp = document.getElementById('start-display');
+const startBtn = document.getElementById('start-btn');
+const startH1 = document.getElementById('start-h1');
+const startDiv = document.getElementById('start-div');
+const quizDisp = document.getElementById('quiz-display');
 const choicesBox = document.createElement('div');
-const resultDisp = document.getElementById('result_display');
+const resultDisp = document.getElementById('result-display');
 //グローバル変数
 let quizList = [];
 let currentQuizNum = 0;
 let currentCorrectNum = 0;
+
 //関数：APIからデータを取得
-async function getApi() {
-  //APIからデータを取得
-  const url = 'https://opentdb.com/api.php?amount=10&category=11&difficulty=hard&type=multiple';
-  const res = await fetch(url);
-  const resArr = await res.json();
-  quizList = resArr.results; //再代入
-    console.log(quizList); //確認用
+const getApi = () => {
+  fetch('https://opentdb.com/api.php?amount=10&category=11&difficulty=hard&type=multiple')
+    .then(response => {        
+      return response.json();
+    })
+    .then(jsonData => {
+      quizList = jsonData.results.slice(); //sliceで値渡し
+    })
+    .then(() => {
+      displayQuiz();
+    });
 }
-//関数：設問画面の表示
+
+//(バックアップ200530)関数：APIからデータを取得
+// async function getApi() {
+//   const url = 'https://opentdb.com/api.php?amount=10&category=11&difficulty=hard&type=multiple';
+//   const res = await fetch(url);
+//   const resArr = await res.json();
+//   quizList = resArr.results.slice(); //sliceで値渡し
+// }
+
+//関数：設問画面を表示
 const displayQuiz = () => {
   if (!startDisp.textContent == '') {startDisp.textContent = ''};
   //設問が切替る度の処理
@@ -31,10 +45,12 @@ const displayQuiz = () => {
     quizDisp.textContent = '';
     choicesBox.textContent = '';
     displayResult(); //結果画面の表示
-    // currentQuizNum = 0; //この2行は「結果→リロード」処理にしている為不要
-    // currentCorrectNum = 0;
     return;
   }
+  createQuiz();
+}
+//関数：設問を生成
+const createQuiz = () => {
   //タグ要素を生成
   const quizNum = document.createElement('h1'); //問題No.
   const quizCate = document.createElement('h2'); //カテゴリー
@@ -44,16 +60,9 @@ const displayQuiz = () => {
   quizNum.textContent = `問題${currentQuizNum + 1}`;
   quizCate.textContent = `[カテゴリー]\n${quizList[currentQuizNum].category}`;    
   quizDiff.textContent = `[難易度]\n${quizList[currentQuizNum].difficulty}`;
-
-  // quizSent.textContent = `${quizList[currentQuizNum].question}`; //文字化けの為、下記を使用
   let str = quizList[currentQuizNum].question;
-  let strReplace = str.replace(/&quot;/g, '"');
-  let strReReplace = strReplace.replace(/&#039;/g, "'");
-  quizSent.textContent = strReReplace;
-
+  quizSent.innerHTML = str; //innerHTMLを使用し文字化けを防ぐ
   quizSent.classList.add('msg'); //スタイル適用の為
-  choicesBox.classList.add('choices'); //スタイル適用の為
-  
   //誤配列の先頭に正の値をマージ
   const correctAnswer = quizList[currentQuizNum].correct_answer; //1択
   const incorrectAnswers = quizList[currentQuizNum].incorrect_answers; //3択
@@ -67,11 +76,11 @@ const displayQuiz = () => {
   quizDisp.appendChild(choicesBox);
   createChoiceBtn(shuffledAnswers); 
 }
-//関数：「選択肢」ボタンの生成
+//関数：「選択肢」ボタンを生成
 const createChoiceBtn = arr => { //仮引数を用い、使用時に実引数として配列を渡す
   arr.forEach(choice => {
     const choiceBtn = document.createElement('button');
-    choiceBtn.textContent = choice;
+    choiceBtn.innerHTML = choice;
     choicesBox.appendChild(choiceBtn)
     //クリックイベントで次の問題へ移行
     choiceBtn.addEventListener('click', () => {        
@@ -79,6 +88,7 @@ const createChoiceBtn = arr => { //仮引数を用い、使用時に実引数と
       displayQuiz();
     });
   });
+  choicesBox.classList.add('choices'); //スタイル適用の為
   currentQuizNum++;
 }
 //関数：シャッフル
@@ -128,19 +138,22 @@ startBtn.addEventListener("click", () => {
   const id = 'loader';
   loader.setAttribute('id', id);
   startDisp.appendChild(loader);
+  
+  getApi(); 
 
-  getApi() //???getApiがasync関数だから.thenメソッドで非同期処理ができる
-    .then(response => { //???このレスポンス何
-      displayQuiz(); //設問を表示
-      // setTimeout(() => { //更に時間差で発火する処理をする場合
-      // }, 3000)
-    })
-    // .then(response => { //非同期処理を続ける場合
-    //   displayQuiz();
-    // })
-    .catch(error => {
-      console.error(error);
-    })
+  //(バックアップ200530)
+  //getApi() //???getApiがasync関数だから.thenメソッドで非同期処理ができる
+  // .then(response => {
+  //   displayQuiz(); //設問を表示
+  //   // setTimeout(() => { //更に時間差で発火する処理をする場合
+  //   // }, 3000)
+  // })
+  // // .then(response => { //非同期処理を続ける場合
+  // //   displayQuiz();
+  // // })
+  // .catch(error => {
+  //   console.error(error);
+  // })
 });
 
 
