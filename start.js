@@ -60,7 +60,7 @@ const createQuiz = () => {
   quizNum.textContent = `問題${currentQuizNum + 1}`;
   quizCate.textContent = `[カテゴリー]\n${quizList[currentQuizNum].category}`;    
   quizDiff.textContent = `[難易度]\n${quizList[currentQuizNum].difficulty}`;
-  let str = quizList[currentQuizNum].question;
+  const str = quizList[currentQuizNum].question;
   quizSent.innerHTML = str; //innerHTMLを使用し文字化けを防ぐ
   quizSent.classList.add('msg'); //スタイル適用の為
   //誤配列の先頭に正の値をマージ
