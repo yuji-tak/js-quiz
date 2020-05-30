@@ -156,7 +156,7 @@ startBtn.addEventListener("click", () => {
   // })
 });
 
-
+//修正が反映されていない為、再push!
 
 //Promiseオブジェクトの使用例
 // const promiseObj = new Promise(resolve => {
