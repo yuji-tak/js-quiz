@@ -1,0 +1,31 @@
+.msg {
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+button {
+  display: block;
+  margin-bottom: 10px;
+}
+button > a {
+  text-decoration: none;
+  color: #333;
+}
+/* LOADER */
+#loader {
+  border: 1.5rem solid #bbb;
+  border-radius: 50%;
+  border-top: 1.5rem solid #333;
+  width: 6rem;
+  height: 6rem;
+  animation: spin 1.5s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
