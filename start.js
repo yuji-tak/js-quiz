@@ -36,7 +36,8 @@ const getApi = () => {
 
 //関数：設問画面を表示
 const displayQuiz = () => {
-  if (!startDisp.textContent == '') {startDisp.textContent = ''};
+  // if (!startDisp.textContent == '') {startDisp.textContent = ''};
+  if (currentQuizNum < 10) {startDisp.textContent = ''};
   //設問が切替る度の処理
   quizDisp.textContent = '';
   choicesBox.textContent = '';
